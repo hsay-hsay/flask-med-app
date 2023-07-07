@@ -26,7 +26,6 @@ def index():
             question = recognizer.recognize_google(data, key=None)
 
     else:
-        # pdf_text = "Sudip has difficulty climbing stairs, difficulty with airline seats, tying shoes,used to public seating, difficulty walking, high cholesterol, and high blood pressure. He has asthmaand difficulty walking two blocks or going eight to ten steps. He has sleep apnea and snoring. He is adiabetic, on medication. He has joint pain, knee pain, back pain, foot and ankle pain, leg and footswelling. He has hemorrhoids"
         pdf_text = main.extract_text_multiple(pdfs_folder=['file_directory/sample1.pdf'])
         # to be searched in the vector database of all the documents
         doc_search = main.get_docsearch(pdf_text)
@@ -76,12 +75,26 @@ def test():
     # query = question
     
     if query=="" or pdf_folder=="" or member_name=="":
-        result ={'error_message': "datalist is empty send positive number list "}
+        result ={'error_message': "Apologies! The information you have requested in not available at this point."}
         return jsonify(result), 400
     
-    pdf_text = main.extract_text_multiple(pdfs_folder=[pdf_folder])
-    doc_search = main.get_docsearch(pdf_text)
-    answer = main.get_answer(query=query, doc_search=doc_search)
+    try:
+        pdf_text = main.extract_text_multiple(pdfs_folder=pdf_folder)
+    except:
+        result ={'error_message': "Apologies! The information you have requested in not available at this point."}
+        return jsonify(result), 400
+        
+    try:
+        doc_search = main.get_docsearch(pdf_text)
+    except:
+        result ={'error_message': "Apologies! The information you have requested in not available at this point."}
+        return jsonify(result), 400
+    
+    try:
+        answer = main.get_answer(query=query, doc_search=doc_search)
+    except:
+        result ={'error_message': "Apologies! The information you have requested in not available at this point."}
+        return jsonify(result), 400
     
     result = {'member':member_name,
               'question':query, 
