@@ -21,10 +21,9 @@ import tempfile
 # extract text from multiple pdf files
 def extract_text_multiple(pdfs_folder):
     # to be change according to ui
-    # extracted_text = text = high_level.extract_text(pdf_path, "")
     raw_text = ""
-    for pdf_file in pdfs_folder:
-        doc_reader = PdfReader(pdf_file)
+    for pdf_file in os.listdir(pdfs_folder):
+        doc_reader = PdfReader(os.path.join(pdfs_folder, pdf_file))
         for page in doc_reader.pages:
             raw_text += " " + page.extract_text()
     return raw_text
@@ -67,6 +66,11 @@ def get_answer(query, doc_search):
     
     # get answer for the given query
     answer = chain.run(input_documents=docs, question=query)
+    
+    # if answer is not found
+    if answer.strip()==" I don't know.".strip():
+        answer = "Apologies! The information you have requested in not available at this point."
+        
     return answer
 
 
